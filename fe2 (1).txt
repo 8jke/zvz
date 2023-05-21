@@ -1,0 +1,36 @@
+function Speed()
+    for i,v in pairs (game.Players.LocalPlayer.Character:GetChildren()) do
+    if v.Name == "SpeedGlitch" then
+        v:Destroy()
+    end
+end
+	print("Started")
+local Part = Instance.new("Part",game.Players.LocalPlayer.Character)
+Part.Name = "SpeedGlitch"
+Part.CanCollide = false
+Part.Anchored = true
+Part.FormFactor = "Custom"
+Part.Size = Vector3.new(1, 2, 1)
+Part.Transparency = 1
+local weld = Instance.new("Weld",Part)
+weld.Part0 = game.Players.LocalPlayer.Character.Torso
+weld.Part1 = Part
+Part.Anchored = false
+print("Done")
+end
+Speed()
+wait()
+local spot = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+local partstand = Instance.new("Part", game.Workspace)
+partstand.Anchored = true
+partstand.Position = Vector3.new(-26.0580711, -148.444977, 48.4997025)
+partstand.Size = Vector3.new(1000,0,1000)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-26.0580711, -144.444977, 48.4997025)
+game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+wait(.1)
+game.Players.LocalPlayer.Character.SpeedGlitch.Position = game.Players.LocalPlayer.Character.Torso.Position * Vector3.new(1,.4,1.3)
+wait()
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spot
+wait()
+game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+partstand:Destroy()
