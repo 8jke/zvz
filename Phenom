@@ -31,5 +31,5 @@ local Settings = Window:NewTab("Noclip")
 local SettingsSection = Window:NewSection("Noclip")
 
 SettingsSection:NewButton("Noclip (Click)", "Noclip Hub", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/JBpVFq7M',true))();
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/8jke/zvz/main/noclip'))();
 end)
