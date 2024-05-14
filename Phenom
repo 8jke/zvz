@@ -14,13 +14,16 @@ MainSection:NewButton("CogAim (Click)", "PEOPLE ARE SUCH L'S!!", function()
     loadstring(game:HttpGet('https://pastebin.com/raw/5rpjy9nd',true))();
 end)
 
-MainSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
-        Library:ToggleUI()
-    end)
-
     local Main = Window:NewTab("MvsdScripts.")
     local MainSection = Main:NewSection("MvsdScripts.")
 
 MainSection:NewButton("Hub (Click)", "Mvsd Hub", function()
     loadstring(game:HttpGet('https://raw.githubusercontent.com/Deni210/murdersvssherrifsduels/main/rubyhub', true))()
 end)
+
+local Main = Window:NewTab("Options/Admin")
+local MainSection = Main:NewSection("Options/Admin")
+
+MainSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
+        Library:ToggleUI()
+    end)
