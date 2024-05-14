@@ -4,7 +4,7 @@ game.StarterGui:SetCore("SendNotification", {
 	Duration = 5;
 })
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-    local Window = Library.CreateLib("Phenom", "Midnight")
+    local Window = Library.CreateLib("Phenom", "DarkTheme")
  
     -- MAIN
     local Main = Window:NewTab("PhenomScripts.")
