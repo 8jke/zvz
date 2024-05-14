@@ -25,7 +25,7 @@ local Main = Window:NewTab("Options/Admin")
 local MainSection = Main:NewSection("Options/Admin")
 
 MainSection:NewButton(Admin", "Admin powers", function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source', true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end)
 
 MainSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
