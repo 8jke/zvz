@@ -79,7 +79,7 @@ Tab:AddButton({
 Tab:AddButton({
 	Name = "Copy Key",
 	Callback = function()
-      		setclipboard("Put The Link Here") --This Will Copy The Link Of The Key
+      		setclipboard("https://pastebin.com/0s8h3KQk") --This Will Copy The Link Of The Key
   	end    
 }) 
     
