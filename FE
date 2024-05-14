@@ -14,7 +14,6 @@ MainSection:NewButton("CogAim (Click)", "PEOPLE ARE SUCH L'S!!", function()
     loadstring(game:HttpGet('https://pastebin.com/raw/5rpjy9nd',true))();
 end)
 
-
     local Main = Window:NewTab("MvsdScripts.")
     local MainSection = Main:NewSection("MvsdScripts.")
 
