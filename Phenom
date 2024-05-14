@@ -22,5 +22,5 @@ MainSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
     local MainSection = Main:NewSection("MvsdScripts.")
 
 MainSection:NewButton("Hub (Click)", "Mvsd Hub", function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/LOLking123456/duels/main/Roblox871', true))();
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/LOLking123456/Sheriffs/main/Duels', true))();
 end)
