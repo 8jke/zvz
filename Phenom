@@ -22,7 +22,7 @@ MainSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
     local MainSection = Main:NewSection("MvsdScripts.")
 
 MainSection:NewButton("Hub (Click)", "Mvsd Hub", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/AsteriskCodes/Ranxware-V2-Restored/main/source.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenniel123/Murderers-VS-Sheriffs-Duels-script/main/Murderers%20VS%20Sheriffs%20Duels%20script",true))();
 end)
 
 -- Settings
