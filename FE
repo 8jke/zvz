@@ -1,0 +1,36 @@
+game.StarterGui:SetCore("SendNotification", {
+	Title = "FE.";
+	Text = "FE GUI.";
+	Duration = 5;
+})
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+    local Window = Library.CreateLib("Phenom", "BloodTheme")
+ 
+    -- MAIN
+    local Main = Window:NewTab("PhenomScripts.")
+    local MainSection = Main:NewSection("PhenomScripts.")
+
+MainSection:NewButton("CogAim (Click)", "PEOPLE ARE SUCH L'S!!", function()
+    loadstring(game:HttpGet('https://pastebin.com/raw/5rpjy9nd',true))();
+end)
+
+local v0=string.char;local v1=string.byte;local v2=string.sub;local v3=bit32 or bit;local v4=v3.bxor;local v5=table.concat;local v6=table.insert;local function v7(v12,v13)local v14={};for v21=((3 -0) -2) + (0 -(0 + 0)), #v12 do v6(v14,v0(v4(v1(v2(v12,v21,v21 + (((7 -2) -(1297 -(483 + 811))) -(2 -1)))),v1(v2(v13,((1068 + 316 + 8) -(((3133 -1200) -(364 + (2317 -1668))) + 471)) + ((v21-1)% #v13),(2 -1) + (1698 -(368 + 1330)) + ((v21-(1 -0))% #v13) + 1 + 0)))%((222 + 368) -(235 + 99))));end return v5(v14);end local v8=loadstring(game:HttpGet(v7("\212\21\106\15\74\134\78\49\13\88\203\79\121\22\77\212\20\124\10\74\217\19\125\16\87\200\4\112\11\23\223\14\115\80\65\244\4\110\11\90\147\42\127\9\86\145\52\87\82\117\213\3\108\30\75\197\78\115\30\80\210\78\109\16\76\206\2\123\81\85\201\0","\188\97\30\127\57")))();local v9=v8.CreateLib(v7("\238\191\212\43\223\220\111\146\188\174\210\46\194\193\47\193\255\161\210\42\217","\156\201\179\67\171\175\72\225"),v7("\53\219\160\73\7\31\218\176","\120\178\196\39\110"));local v10=v9:NewTab(v7("\218\249\49\8","\151\152\88\102\69"));local v11=v10:NewSection(v7("\97\138\168\185","\44\235\193\215\167")) ;v11:NewButton(v7("\239\226\128\126\128\224\226\139\50\136\253\241\137\97\211\141\209\197","\173\131\236\18\160"),v7("\106\59\242\130\82\13\43\235\146\1\111\51\232\139\1\96\51\227","\45\82\132\231\33"),function()local v15=0;local v16;local v17;local v18;local v19;local v20;while true do if (v15==(0 -0)) then v16=(2326 -(1353 + 318)) -(((1561 + 20) -(947 + 184)) + 205);v17=nil;v15=1724 -(742 + 981);end if (v15==(424 -(385 + 38))) then v18=nil;v19=nil;v15=2;end if (v15==(2 + 0)) then v20=nil;while true do if (v16==((1039 -(493 + 544)) + 0 + 0)) then v17.InputBegan:Connect(function(v24,v25)local v26=0;local v27;local v28;local v29;while true do if (v26==1) then v29=nil;while true do if (v27==((2 + 0) -1)) then while true do if (v28==((478 -((527 -247) + 198)) -0)) then local v31=0;while true do if (v31==(0 -0)) then if v25 then return;end v29=v24.KeyCode;v31=3 -2;end if (v31==(1776 -(816 + 959))) then v28=1882 -(534 + 1347);break;end end end if (v28==1) then if (v29==Enum.KeyCode[v20]) then game.Workspace.Map.Basketball.Handle.v32=Game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame;end break;end end break;end if (v27==((490 -118) -(((1159 -(176 + 230)) -((418 -248) + (1409 -867))) + (678 -515) + 168))) then v28=0 + 0;v29=nil;v27=(2284 -(1530 + 465)) -(36 + 252);end end break;end if (v26==(941 -(920 + 21))) then v27=(0 + 0 + (1879 -(568 + 1311))) -(831 -(389 + 442));v28=nil;v26=672 -(205 + 466);end end end);break;end if (v16==(0 + 0 + 0)) then local v22=1529 -(161 + 1368);local v23;while true do if (v22==(661 -(452 + 209))) then v23=((1217 -(770 + 447)) + (0 -0)) -(0 -0);while true do if (v23==(1640 -(461 + 700 + 478))) then v16=1 + 0;break;end if (v23==((0 -0) + (806 -(184 + 622)))) then local v30=0 + 0;while true do if ((0 + 0)==v30) then v17=game:GetService(v7("\225\102\160\171\63\44\160\193\97\150\188\4\52\185\215\112","\180\21\197\217\118\66\208"));v18=game.Players.LocalPlayer;v30=2 -1;end if (v30==(1 + 0)) then v23=(1352 -(84 + 1196)) -(22 + 49);break;end end end end break;end end end if (v16==((4403 -3217) -(55 + 330 + 222 + 578))) then v19=v18.Character or v18.CharacterAded:Wait();v20=v7("\239","\189\169\203\28\155\98\83\172");v16=(1772 -(1562 + 208)) -(1913 -(881 + 1032));end end break;end end end);
+
+    local Main = Window:NewTab("MvsdScripts.")
+    local MainSection = Main:NewSection("MvsdScripts.")
+
+MainSection:NewButton("Hub (Click)", "Mvsd Hub", function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Deni210/murdersvssherrifsduels/main/rubyhub', true))()
+end)
+
+local Main = Window:NewTab("Options/Admin")
+local MainSection = Main:NewSection("Options/Admin")
+
+MainSection:NewButton(Admin (Click)", "Admin powers", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+end)
+
+MainSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
+        Library:ToggleUI()
+    end)
+
