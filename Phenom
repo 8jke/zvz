@@ -18,9 +18,9 @@ MainSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
         Library:ToggleUI()
     end)
 
-    local Main = Window:NewTab("MvsdScripts.")
-    local MainSection = Main:NewSection("MvsdScripts.")
+    local Mvsd = Window:NewTab("MvsdScripts.")
+    local MvsdSection = Main:NewSection("MvsdScripts.")
 
-MainSection:NewButton("Hub (Click)", "Mvsd Hub", function()
+MvsdSection:NewButton("Hub (Click)", "Mvsd Hub", function()
     loadstring(game:HttpGet(“https://raw.githubusercontent.com/LOLking123456/duels/main/Roblox871”))()
 end)
