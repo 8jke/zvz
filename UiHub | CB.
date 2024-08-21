@@ -1,21 +1,29 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-    local Window = Library.CreateLib("Phenom", "Synapse")
- 
-    -- MAIN
-    local Main = Window:NewTab("CB.")
-    local MainSection = Main:NewSection("CB.")
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "[CB]UiHub",IntroEnabled = true,IntroText = "CB", HidePremium = false, SaveConfig = true, ConfigFolder = "CB"})
 
-MainSection:NewButton("no HL nojumpbot", "x", function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/8jke/zvz/main/Aimbot.',true))();
+local MainTab = Window:MakeTab({
+    Name = "Main Tab",
+    Icon = "rbxassetid://17079723134"
+})
+
+MainTab:AddButton({
+	Name = "ESP",
+	Callback = function()
+      		loadstring(game:HttpGet('https://raw.githubusercontent.com/8jke/zvz/main/Esp ', true))();
 end)
 
-MainSection:NewButton("No HL T Aimbot", "x", function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/8jke/zvz/main/Esp ', true))();
+})
+
+MainTab:AddButton({
+	Name = "Aimbot",
+	Callback = function()
+      		loadstring(game:HttpGet('https://raw.githubusercontent.com/8jke/zvz/main/Aimbot.',true))();
 end)
 
- local Main = Window:NewTab("Ui")
-    local MainSection = Main:NewSection("Ui")
-
-MainSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
-        Library:ToggleUI()
-    end)
+})
+local Notify = AkaliNotif.Notify;
+Notify({
+Description = "THANKS FOR USING MY SCRIPT!";
+Title = "CB";
+Duration = 10;
+});
