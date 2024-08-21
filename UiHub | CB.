@@ -1,0 +1,21 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+    local Window = Library.CreateLib("Phenom", "Synapse")
+ 
+    -- MAIN
+    local Main = Window:NewTab("CB.")
+    local MainSection = Main:NewSection("CB.")
+
+MainSection:NewButton("no HL nojumpbot", "x", function()
+    loadstring(game:HttpGet('https://pastebin.com/raw/WUiTmST1',true))();
+end)
+
+MainSection:NewButton("No HL T Aimbot", "x", function()
+    loadstring(game:HttpGet('https://pastebin.com/raw/J0K9mg1h'))()
+end)
+
+ local Main = Window:NewTab("Ui")
+    local MainSection = Main:NewSection("Ui")
+
+MainSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
+        Library:ToggleUI()
+    end)
