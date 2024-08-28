@@ -1,3 +1,5 @@
+-- JJSploit, KRNL, and FluxTeam
+
 game.StarterGui:SetCore("SendNotification", {
 	Title = "Phenom.";
 	Text = "Phenom Scripts.";
