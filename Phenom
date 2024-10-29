@@ -19,7 +19,7 @@ MainSection:NewButton("No HL T Aimbot", "x", function()
 end)
 
 MainSection:NewButton("NormalSIlent (X)", "Jump then Press X", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/yPY7v700',true))();
+    loadstring(game:HttpGet('https://pastebin.com/raw/uhfHgwty',true))();
 end)
 
 MainSection:NewButton("PLAYGROUND SILENT NO HL! (X)", "Jump then Press X", function()
