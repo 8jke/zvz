@@ -11,14 +11,14 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHept
     local MainSection = Main:NewSection("OZU'S SCRIPTSSSSSS")
 
 MainSection:NewButton("no HL nojumpbot", "x", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/WUiTmST1',true))();
+    loadstring(game:HttpGet('https://pastebin.com/raw/9ncKRB2D',true))();
 end)
 
 MainSection:NewButton("No HL T Aimbot", "x", function()
     loadstring(game:HttpGet('https://pastebin.com/raw/J0K9mg1h'))()
 end)
 
-MainSection:NewButton("NormalSIlent (X)", "Jump then Press X", function()
+MainSection:NewButton("NormalSIlent (X)", "X jump and click Use T at 85 line", function()
     loadstring(game:HttpGet('https://pastebin.com/raw/uhfHgwty',true))();
 end)
 
@@ -27,7 +27,7 @@ MainSection:NewButton("PLAYGROUND SILENT NO HL! (X)", "Jump then Press X", funct
 end)
 
 MainSection:NewButton("Bounce No HL", "x", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/gcKC08D9'))()
+    loadstring(game:HttpGet('https://pastebin.com/raw/9hAPAWtN'))()
 end)
 
 MainSection:NewButton("Auto Score! (L)", "PEOPLE ARE SUCH L'S!!", function()
