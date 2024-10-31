@@ -1,29 +1,44 @@
--- Load Kavo UI Library
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Phenom Aimbot", "DarkTheme")
+-- Load Rayfield UI Library
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+getgenv().SecureMode = true -- Use Secure Mode if necessary
 
--- Main Tab
-local Main = Window:NewTab("Aimbot Controls")
-local MainSection = Main:NewSection("Aimbot Settings")
+-- Create the main window
+local Window = Rayfield:CreateWindow({
+    Name = "Phenom Aimbot",
+    LoadingTitle = "Rayfield Interface Suite",
+    LoadingSubtitle = "by Sirius",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "Phenom Aimbot"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "", -- Set your invite link if needed
+        RememberJoins = true
+    },
+    KeySystem = false,
+})
 
--- UI Settings Tab
-local SettingsTab = Window:NewTab("UI Settings")
-local SettingsSection = SettingsTab:NewSection("Settings")
+-- Main Tab for Aimbot Controls
+local AimbotTab = Window:CreateTab("Aimbot Controls", 4483362458)
+-- Tab for UI Settings
+local SettingsTab = Window:CreateTab("UI Settings", 4483362458)
 
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local torso = character:WaitForChild("Torso")
 local camera = game.Workspace.CurrentCamera
-local rs = game:GetService("RunService")
 local userInputService = game:GetService("UserInputService")
 
--- Variables for state management
+-- State management variables
 local is155Active = false
 local is190Active = false
-local is130Active = false
-local is115Active = false
+local is140Active = false
+local is135Active = false
 local tracking = false
 local targetY = 155
+local guiVisible = true
 
 -- Function to find the nearest goal
 local function findGoal()
@@ -49,120 +64,46 @@ local function updateCamera()
             local partyGoal = findGoal()
             if partyGoal then
                 local currentDistance = (character.PrimaryPart.Position - partyGoal.Position).magnitude
-
+                
                 if is155Active then
                     targetY = 155 - math.floor(math.max(currentDistance - 5, 0) / 5) * 1.1
                     targetY = math.clamp(targetY, 20, 155)
                 elseif is190Active then
                     targetY = 190 - math.floor(currentDistance / 5)
                     targetY = math.clamp(targetY, 20, 190)
-                elseif is130Active then
-                    targetY = 130 - math.floor(currentDistance / 5)
-                    targetY = math.clamp(targetY, 20, 130)
-                elseif is115Active then
-                    targetY = 115 - math.floor(currentDistance / 5)
-                    targetY = math.clamp(targetY, 20, 115)
+                elseif is140Active then
+                    targetY = 140 - math.floor(currentDistance / 5)
+                    targetY = math.clamp(targetY, 20, 140)
+                elseif is135Active then
+                    targetY = 135 - math.floor(currentDistance / 5)
+                    targetY = math.clamp(targetY, 20, 135)
                 end
-
+                
                 local lookAt = partyGoal.Position + Vector3.new(0, targetY, 0)
                 camera.CFrame = CFrame.new(camera.CFrame.Position, lookAt)
+                
+                -- Print the player's current position to the console
+                print("Current Position:", character.PrimaryPart.Position)
             end
         end
     end
 end
 
-local cameraUpdateCoroutine = coroutine.create(updateCamera)
-
--- Button to toggle 155 camera mode
-MainSection:NewButton("Activate 155 Mode", "Activates the 155 camera mode.", function()
-    is190Active = false
-    is130Active = false
-    is115Active = false
-    is155Active = true
-    Library:Notification("Mode Activated", "155 Mode is now active!", 5)
-
-    -- 155 Mode Aimbot Functionality
-    local partyGoal = findGoal()
-    if partyGoal then
-        camera.CFrame = CFrame.new(camera.CFrame.Position, partyGoal.Position + Vector3.new(0, 155, 0))
-    end
-end)
-
--- Button to toggle 190 camera mode
-MainSection:NewButton("Activate 190 Mode", "Activates the 190 camera mode.", function()
-    is155Active = false
-    is130Active = false
-    is115Active = false
-    is190Active = true
-    Library:Notification("Mode Activated", "190 Mode is now active!", 5)
-
-    -- 190 Mode Aimbot Functionality
-    local partyGoal = findGoal()
-    if partyGoal then
-        camera.CFrame = CFrame.new(camera.CFrame.Position, partyGoal.Position + Vector3.new(0, 190, 0))
-    end
-end)
-
--- Button to toggle 130 camera mode
-MainSection:NewButton("Activate 130 Mode", "Activates the 130 camera mode.", function()
-    is155Active = false
-    is190Active = false
-    is115Active = false
-    is130Active = true
-    Library:Notification("Mode Activated", "130 Mode is now active!", 5)
-
-    -- 130 Mode Aimbot Functionality
-    local partyGoal = findGoal()
-    if partyGoal then
-        camera.CFrame = CFrame.new(camera.CFrame.Position, partyGoal.Position + Vector3.new(0, 130, 0))
-    end
-end)
-
--- Button to toggle 115 camera mode
-MainSection:NewButton("Activate 115 Mode", "Activates the 115 camera mode.", function()
-    is155Active = false
-    is190Active = false
-    is130Active = false
-    is115Active = true
-    Library:Notification("Mode Activated", "115 Mode is now active!", 5)
-
-    -- 115 Mode Aimbot Functionality
-    local partyGoal = findGoal()
-    if partyGoal then
-        camera.CFrame = CFrame.new(camera.CFrame.Position, partyGoal.Position + Vector3.new(0, 115, 0))
-    end
-end)
-
--- Ball Mag Button
-MainSection:NewButton("Ball Mag (Press R)", "Gives you Ball Mag", function()
-    local UIS = game:GetService('UserInputService')
-    local Key = 'R'
-    UIS.InputBegan:Connect(function(Input, IsTyping)
-        if IsTyping then return end
-        if Input.KeyCode == Enum.KeyCode[Key] then
-            local ball = game.Workspace.Map.Basketball.Handle
-            if ball then
-                ball.CFrame = player.Character.HumanoidRootPart.CFrame
-            end
-        end
-    end)
-end)
-
--- Keybind to toggle the GUI visibility
-SettingsSection:NewKeybind("Toggle GUI", "Toggles the GUI visibility.", Enum.KeyCode.One, function()
-    Library:ToggleUI()
-end)
-
 -- Function to handle input for tracking
 local function onInputBegan(input, gameProcessedEvent)
     if input.KeyCode == Enum.KeyCode.X then
         tracking = true
+        print("Tracking started")
+    elseif input.KeyCode == Enum.KeyCode.T then
+        guiVisible = not guiVisible -- Toggle GUI visibility
+        Rayfield:ToggleUI(guiVisible)
     end
 end
 
 local function onInputEnded(input)
     if input.KeyCode == Enum.KeyCode.X then
         tracking = false
+        print("Tracking stopped")
     end
 end
 
@@ -170,11 +111,93 @@ end
 userInputService.InputBegan:Connect(onInputBegan)
 userInputService.InputEnded:Connect(onInputEnded)
 
--- Button to rejoin the game
-SettingsSection:NewButton("Rejoin Game", "Rejoin the current game.", function()
-    local teleportService = game:GetService("TeleportService")
-    teleportService:Teleport(game.PlaceId, player)
-end)
-
 -- Start the camera update coroutine
-coroutine.resume(cameraUpdateCoroutine)
+coroutine.wrap(updateCamera)()
+
+-- Button to toggle 155 camera mode
+AimbotTab:CreateButton({
+    Name = "Activate 155 Mode",
+    Callback = function()
+        is190Active = false
+        is140Active = false
+        is135Active = false
+        is155Active = true
+        Rayfield:Notify({
+            Title = "Mode Activated",
+            Content = "155 Mode is now active!",
+            Duration = 3,
+        })
+    end,
+})
+
+-- Button to toggle 190 camera mode
+AimbotTab:CreateButton({
+    Name = "Activate 190 Mode",
+    Callback = function()
+        is155Active = false
+        is140Active = false
+        is135Active = false
+        is190Active = true
+        Rayfield:Notify({
+            Title = "Mode Activated",
+            Content = "190 Mode is now active!",
+            Duration = 3,
+        })
+    end,
+})
+
+-- Button to toggle 140 camera mode
+AimbotTab:CreateButton({
+    Name = "Activate 140 Mode",
+    Callback = function()
+        is155Active = false
+        is190Active = false
+        is135Active = false
+        is140Active = true
+        Rayfield:Notify({
+            Title = "Mode Activated",
+            Content = "140 Mode is now active!",
+            Duration = 3,
+        })
+    end,
+})
+
+-- Button to toggle 135 camera mode
+AimbotTab:CreateButton({
+    Name = "Activate 135 Mode",
+    Callback = function()
+        is155Active = false
+        is190Active = false
+        is140Active = false
+        is135Active = true
+        Rayfield:Notify({
+            Title = "Mode Activated",
+            Content = "135 Mode is now active!",
+            Duration = 3,
+        })
+    end,
+})
+
+-- Keybind to toggle the GUI visibility
+SettingsTab:CreateKeybind({
+    Name = "Toggle GUI",
+    CurrentKeybind = "T",
+    HoldToInteract = false,
+    Callback = function()
+        guiVisible = not guiVisible -- Toggle GUI visibility
+        Rayfield:ToggleUI(guiVisible)
+    end,
+})
+
+-- Button for rejoining the game
+SettingsTab:CreateButton({
+    Name = "Rejoin Game",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local placeId = game.PlaceId
+        game:GetService("TeleportService"):Teleport(placeId, player)
+    end,
+})
+
+-- Start the GUI
+Rayfield:ToggleUI()
