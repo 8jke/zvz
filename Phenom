@@ -1,96 +1,180 @@
-game.StarterGui:SetCore("SendNotification", {
-	Title = "E";
-	Text = "E";
-	Duration = 5;
-})
+-- Load Kavo UI Library
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-    local Window = Library.CreateLib("Phenom", "Midnight")
- 
-    -- MAIN
-    local Main = Window:NewTab("OZU'S SCRIPTSSSSSS")
-    local MainSection = Main:NewSection("OZU'S SCRIPTSSSSSS")
+local Window = Library.CreateLib("Phenom Aimbot", "DarkTheme")
 
-MainSection:NewButton("no HL nojumpbot", "x", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/9ncKRB2D',true))();
-end)
+-- Main Tab
+local Main = Window:NewTab("Aimbot Controls")
+local MainSection = Main:NewSection("Aimbot Settings")
 
-MainSection:NewButton("No HL T Aimbot", "x", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/J0K9mg1h'))()
-end)
+-- UI Settings Tab
+local SettingsTab = Window:NewTab("UI Settings")
+local SettingsSection = SettingsTab:NewSection("Settings")
 
-MainSection:NewButton("NormalSIlent (X)", "X jump and click Use T at 85 line", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/uhfHgwty',true))();
-end)
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local torso = character:WaitForChild("Torso")
+local camera = game.Workspace.CurrentCamera
+local rs = game:GetService("RunService")
+local userInputService = game:GetService("UserInputService")
 
-MainSection:NewButton("PLAYGROUND SILENT NO HL! (X)", "Jump then Press X", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/nc8NcPAu',true))();
-end)
+-- Variables for state management
+local is155Active = false
+local is190Active = false
+local is130Active = false
+local is115Active = false
+local tracking = false
+local targetY = 155
 
-MainSection:NewButton("Bounce No HL", "x", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/9hAPAWtN'))()
-end)
-
-MainSection:NewButton("Auto Score! (L)", "PEOPLE ARE SUCH L'S!!", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/2VH8kQty',true))();
-end)
-
-MainSection:NewButton("Follow Ball", "Press M", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/uWb3zfPe',true))();
-end)
-    
-    MainSection:NewButton("Ball Mag (Press R)", "Gives you Ball Mag", function()
-        local UIS = game:GetService('UserInputService')
-        local plr = game.Players.LocalPlayer
-        local Char = plr.Character or plr.CharacterAded:Wait()
-        local Key = 'R'
-        UIS.InputBegan:Connect(function(Input, IsTyping)
-        if IsTyping then return end
-        local KeyPressed = Input.KeyCode
-        if KeyPressed == Enum.KeyCode[Key] then
-        game.Workspace.Map.Basketball.Handle.CFrame = Game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+-- Function to find the nearest goal
+local function findGoal()
+    local nearestGoal = nil
+    local lowest = math.huge
+    for _, v in pairs(game.Workspace:GetDescendants()) do
+        if v.Name == "Goal" and v:IsA("Part") then
+            local distance = (torso.Position - v.Position).magnitude
+            if distance < lowest then
+                lowest = distance
+                nearestGoal = v
+            end
         end
-        end)
-    end)
+    end
+    return nearestGoal
+end
 
-    -- PLAYER
-    local Player = Window:NewTab("Other SCWIPTSSSSS")
-    local PlayerSection = Player:NewSection("Other SCWIPTSSSSS")
-   
+-- Function to update the camera position based on the active mode
+local function updateCamera()
+    while true do
+        wait()
+        if tracking then
+            local partyGoal = findGoal()
+            if partyGoal then
+                local currentDistance = (character.PrimaryPart.Position - partyGoal.Position).magnitude
 
-PlayerSection:NewButton("aimstudio checker", "click to see", function()
-    loadstring(game:HttpGet('https://pastebin.com/raw/vBPYpCaj'))()
+                if is155Active then
+                    targetY = 155 - math.floor(math.max(currentDistance - 5, 0) / 5) * 1.1
+                    targetY = math.clamp(targetY, 20, 155)
+                elseif is190Active then
+                    targetY = 190 - math.floor(currentDistance / 5)
+                    targetY = math.clamp(targetY, 20, 190)
+                elseif is130Active then
+                    targetY = 130 - math.floor(currentDistance / 5)
+                    targetY = math.clamp(targetY, 20, 130)
+                elseif is115Active then
+                    targetY = 115 - math.floor(currentDistance / 5)
+                    targetY = math.clamp(targetY, 20, 115)
+                end
+
+                local lookAt = partyGoal.Position + Vector3.new(0, targetY, 0)
+                camera.CFrame = CFrame.new(camera.CFrame.Position, lookAt)
+            end
+        end
+    end
+end
+
+local cameraUpdateCoroutine = coroutine.create(updateCamera)
+
+-- Button to toggle 155 camera mode
+MainSection:NewButton("Activate 155 Mode", "Activates the 155 camera mode.", function()
+    is190Active = false
+    is130Active = false
+    is115Active = false
+    is155Active = true
+    Library:Notification("Mode Activated", "155 Mode is now active!", 5)
+
+    -- 155 Mode Aimbot Functionality
+    local partyGoal = findGoal()
+    if partyGoal then
+        camera.CFrame = CFrame.new(camera.CFrame.Position, partyGoal.Position + Vector3.new(0, 155, 0))
+    end
 end)
-    PlayerSection:NewButton("Admin!", "Gives Admin", function()    
-loadstring(game:HttpGet("https://raw.githubusercontent.com/fatesc/fates-admin/main/main.lua"))();
+
+-- Button to toggle 190 camera mode
+MainSection:NewButton("Activate 190 Mode", "Activates the 190 camera mode.", function()
+    is155Active = false
+    is130Active = false
+    is115Active = false
+    is190Active = true
+    Library:Notification("Mode Activated", "190 Mode is now active!", 5)
+
+    -- 190 Mode Aimbot Functionality
+    local partyGoal = findGoal()
+    if partyGoal then
+        camera.CFrame = CFrame.new(camera.CFrame.Position, partyGoal.Position + Vector3.new(0, 190, 0))
+    end
 end)
 
-    PlayerSection:NewButton("Infinite Jumps", "Gives you Infinite Jumps", function()    
-    local InfiniteJumpEnabled = true
-    game:GetService("UserInputService").JumpRequest:connect(function()
-	if InfiniteJumpEnabled then
-		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")
-	end
+-- Button to toggle 130 camera mode
+MainSection:NewButton("Activate 130 Mode", "Activates the 130 camera mode.", function()
+    is155Active = false
+    is190Active = false
+    is115Active = false
+    is130Active = true
+    Library:Notification("Mode Activated", "130 Mode is now active!", 5)
+
+    -- 130 Mode Aimbot Functionality
+    local partyGoal = findGoal()
+    if partyGoal then
+        camera.CFrame = CFrame.new(camera.CFrame.Position, partyGoal.Position + Vector3.new(0, 130, 0))
+    end
+end)
+
+-- Button to toggle 115 camera mode
+MainSection:NewButton("Activate 115 Mode", "Activates the 115 camera mode.", function()
+    is155Active = false
+    is190Active = false
+    is130Active = false
+    is115Active = true
+    Library:Notification("Mode Activated", "115 Mode is now active!", 5)
+
+    -- 115 Mode Aimbot Functionality
+    local partyGoal = findGoal()
+    if partyGoal then
+        camera.CFrame = CFrame.new(camera.CFrame.Position, partyGoal.Position + Vector3.new(0, 115, 0))
+    end
+end)
+
+-- Ball Mag Button
+MainSection:NewButton("Ball Mag (Press R)", "Gives you Ball Mag", function()
+    local UIS = game:GetService('UserInputService')
+    local Key = 'R'
+    UIS.InputBegan:Connect(function(Input, IsTyping)
+        if IsTyping then return end
+        if Input.KeyCode == Enum.KeyCode[Key] then
+            local ball = game.Workspace.Map.Basketball.Handle
+            if ball then
+                ball.CFrame = player.Character.HumanoidRootPart.CFrame
+            end
+        end
     end)
+end)
 
-    end)
+-- Keybind to toggle the GUI visibility
+SettingsSection:NewKeybind("Toggle GUI", "Toggles the GUI visibility.", Enum.KeyCode.One, function()
+    Library:ToggleUI()
+end)
 
+-- Function to handle input for tracking
+local function onInputBegan(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.X then
+        tracking = true
+    end
+end
 
-    --Settings
-    local Settings = Window:NewTab("Settings")
-    local SettingsSection = Settings:NewSection("Settings")
+local function onInputEnded(input)
+    if input.KeyCode == Enum.KeyCode.X then
+        tracking = false
+    end
+end
 
-    SettingsSection:NewButton("Reset", "Resets your Characters", function()
-        game.Players.LocalPlayer.Character.Humanoid.Health = 0
-    end)
+-- Connect the input events to the functions
+userInputService.InputBegan:Connect(onInputBegan)
+userInputService.InputEnded:Connect(onInputEnded)
 
-    SettingsSection:NewButton("Rejoins", "Rejoins your game", function()
-        local TeleportService = game:GetService("TeleportService")
-        local placeID = 623694595
-        local player = Game.Players.LocalPlayer
-         
-        TeleportService:Teleport(placeID, player)
-    end)
+-- Button to rejoin the game
+SettingsSection:NewButton("Rejoin Game", "Rejoin the current game.", function()
+    local teleportService = game:GetService("TeleportService")
+    teleportService:Teleport(game.PlaceId, player)
+end)
 
-    SettingsSection:NewKeybind("Toggle", "Toggles the Gui", Enum.KeyCode.One, function()
-        Library:ToggleUI()
-    end)
+-- Start the camera update coroutine
+coroutine.resume(cameraUpdateCoroutine)
