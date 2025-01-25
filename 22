@@ -1,4 +1,1 @@
 game:GetService("VoiceChatService"):joinVoice()
-
-print("Nameless Admin Executed")
-loadstring(game:HttpGet('https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source'))()
