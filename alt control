@@ -1,0 +1,15 @@
+-- Alt Control Script Configuration
+_G.prefix = "/" -- Command prefix
+_G.mainAccount = "MAIN ACCOUNT HERE" -- Main account to control alt accounts
+_G.fpslimit = 30 -- Default FPS limit for alt accounts
+
+-- List of alt accounts to control
+_G.altAccounts = {
+    ["Koeaims"] = true,
+    ["Cold018"] = true,
+    ["svpfps"] = true, --copy this line and paste it below to add more accounts (make sure there's a comma after each line)
+    ["nlxrj"] = true,
+}
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Nuclearpotato69/Punchy-Alt-Control/main/main.lua", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/8jke/zvz/refs/heads/main/wip", true))()
