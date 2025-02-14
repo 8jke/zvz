@@ -622,10 +622,127 @@
  cmd.add({"executor"}, {"executor", "Very simple executor"}, function()
 	 loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/FE/main/executor"))()
  end)
+
+cmd.add({"anti"}, {"anti", "Temporarily moves you below the map and back to avoid detection."}, function(data)
+    -- Get the HumanoidRootPart of the local player
+    local hrp = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then
+        warn("HumanoidRootPart not found!")
+        return
+    end
+
+    -- Adjust FallenPartsDestroyHeight to prevent the player from being destroyed
+    workspace.FallenPartsDestroyHeight = -1000
+
+    -- Store the current position to return to later
+    local lastCFrame = hrp.CFrame
+
+    -- Move the player below the map
+    hrp.CFrame = CFrame.new(Vector3.new(0, -500, 0))
+
+    -- Wait briefly
+    task.wait(0.7)
+
+    -- Move the player back to the original position
+    hrp.CFrame = lastCFrame
+
+    -- Reset FallenPartsDestroyHeight
+    workspace.FallenPartsDestroyHeight = -500
+end)
+
+-- Message filtering connection
+if _G.oMDF then
+    _G.oMDF:Disconnect()
+    _G.oMDF = nil
+end
+
+_G.oMDF = onMessageDoneFiltering.OnClientEvent:Connect(function(messageData)
+    local speaker, message = game.Players[messageData.FromSpeaker], messageData.Message
+    if not (speaker.Name == OWNER) then return end
+
+    local isCommand = message:sub(1, 1) == prefix
+    local commandName = message:sub(2):split(" ")[1]
+    local command = commands[commandName]
+    local args = message:sub(2):split(" ")
+    table.remove(args, 1)
+
+    local data = {
+        root = speaker.Character and speaker.Character:FindFirstChild("HumanoidRootPart"),
+        args = args,
+    }
+
+    if isCommand and command then
+        command(data)
+    end
+end)
+
+
+cmd.add({"Unsuspend", ss}, {"Unsuspend", "ss", "Joins the voice chat using VoiceChatService"}, function()
+	game:GetService("VoiceChatService"):joinVoice()
+end)
  
  cmd.add({"scripthub"}, {"scripthub", "Thanks to scriptblox api"}, function()
 	 loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/FE/main/ScriptHub"))()
  end)
+
+ local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+cmd.add({"morph", "morph me chair"}, {"morph", "Morph into a chair using User ID and Asset ID"}, function(data)
+    local player = data.player -- Assumes `data.player` contains the player object
+
+    -- Check if the player has a character
+    local character = player.Character
+    if not character then
+        warn("Player's character not found!")
+        return
+    end
+
+    -- Ensure a User ID and Asset ID are provided
+    local userId = tonumber(data.args[1]) -- First argument: User ID
+    local assetId = tonumber(data.args[2]) -- Second argument: Asset ID
+    if not userId or not assetId then
+        warn("You must specify a valid User ID and Asset ID!")
+        return
+    end
+
+    -- Remove the player's existing body parts
+    for _, part in pairs(character:GetChildren()) do
+        if part:IsA("BasePart") or part:IsA("MeshPart") or part:IsA("Accessory") then
+            part:Destroy()
+        end
+    end
+
+    -- Load the chair asset using the provided User ID and Asset ID
+    local success, chairModel = pcall(function()
+        return game:GetService("InsertService"):LoadAsset(assetId)
+    end)
+
+    if not success or not chairModel then
+        warn(("Failed to load the chair model from User ID %d and Asset ID %d."):format(userId, assetId))
+        return
+    end
+
+    -- Ensure the loaded asset is a model
+    if not chairModel:IsA("Model") then
+        warn("The asset ID does not correspond to a model!")
+        chairModel:Destroy()
+        return
+    end
+
+    -- Add a Humanoid to the chair model to make it functional
+    local humanoid = Instance.new("Humanoid")
+    humanoid.Parent = chairModel
+
+    -- Position the chair model at the player's character's location
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if humanoidRootPart then
+        chairModel:SetPrimaryPartCFrame(humanoidRootPart.CFrame)
+    end
+
+    -- Parent the chair model to the player's character
+    chairModel.Parent = character
+end)
+
  
  cmd.add({"stand"}, {"stand <player>", "Makes a player your stand"}, function(...)
 		   Username = (...)
@@ -678,6 +795,8 @@
  require(game:GetService("Chat").ClientChatModules.ChatSettings).WindowResizable = true
  require(game:GetService("Chat").ClientChatModules.ChatSettings).WindowDraggable = true
  end)
+
+ 
  
  alreadyantilag = false
  cmd.add({"lag"}, {"lag <player>", "Chat lag"}, function()
@@ -2023,6 +2142,15 @@ print(Time)
  cmd.add({"commands", "cmds"}, {"commands (cmds)", "Open the command list"}, function()
 	 gui.commands()
  end)
+
+ cmd.add({"drift", "dft", "cardrift", "car"}, {"drift (dft, cardrift, car)", "Makes the car drift"}, function()
+    -- Add the loadstring and hat commands here
+    loadstring(game:HttpGet("https://pastebin.com/raw/3LFJsiui", true))()
+    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(";hat me 4332375148", "All")
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(";face me 128992838", "All")
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(";shirt me 6861210310", "All")
+end)
+
  
  cmd.add({"commandcount", "cc"}, {"commandcount (cc)", "Counds how many commands NA has"}, function()
  
@@ -3971,7 +4099,7 @@ cmd.add({"chicken"}, {"chicken <speed>", "Play funny animations at a given speed
 end)
 
 cmd.add({"stop"}, {"stop", "Stop all animations"}, function()
-		 game:GetService("ReplicatedStorage")["HDAdminClient"]["Signals"]["RequestCommand"]:InvokeServer(";re")
+		 chat()
 	 end)
 
  cmd.add({"skydive", "sky"}, {"skydive <player> (sky)", "Skydives the player"}, function(...)
@@ -4233,13 +4361,28 @@ cmd.add({"stop"}, {"stop", "Stop all animations"}, function()
 	 lib.disconnect("spam")
  end)
  
- cmd.add({"respawn", "re"}, {"respawn", "Respawn your character"}, function()
+cmd.add({"respawn", "re"}, {"respawn", "Respawn your character"}, function()
 	 local old = getChar().HumanoidRootPart.CFrame
 	 respawn()
 	 wait()
 	 plr.CharacterAdded:Wait()
 	 getChar():WaitForChild("HumanoidRootPart").CFrame = old
  end)
+
+cmd.add({"refresh", "rf"}, {"refresh", "Refresh your character instantly"}, function()
+    local oldCFrame = getChar().HumanoidRootPart.CFrame -- Save the original position
+
+    -- Immediately handle the respawn and reposition
+    local connection
+    connection = plr.CharacterAdded:Connect(function(char)
+        local hrp = char:WaitForChild("HumanoidRootPart", 0.3) -- Wait briefly for HumanoidRootPart
+        if hrp then
+            hrp.CFrame = oldCFrame -- Restore the original position
+        end
+        connection:Disconnect() -- Disconnect the event after handling
+    end)
+end)
+
  
  cmd.add({"seizure"}, {"seizure", "Gives you a seizure"}, function()
 	 
@@ -7371,31 +7514,62 @@ game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageReque
  loopgrab = false
  end)
  
- cmd.add({"dance"}, {"dance", "Does a random dance"}, function()
-	dances = {"248263260", "27789359", "45834924", "28488254", "33796059", "30196114", "52155728"}
-	if game.Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').RigType == Enum.HumanoidRigType.R15 then
-			dances = {"4555808220", "4555782893", "3333432454", "4049037604"}
-	end
- if theanim then
-	 theanim:Stop()
- theanim:Destroy()
-		 local animation = Instance.new("Animation")
-		 animation.AnimationId = "rbxassetid://" .. dances[math.random(1, #dances)]
-		 theanim = game.Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):LoadAnimation(animation)
-		 theanim:Play()
-	 else
-			 local animation = Instance.new("Animation")
-		 animation.AnimationId = "rbxassetid://" .. dances[math.random(1, #dances)]
-		 theanim = game.Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):LoadAnimation(animation)
-		 theanim:Play()
-		 end
- end)
- 
- cmd.add({"undance"}, {"undance", "Stops the dance command"}, function()
- theanim:Stop()
- theanim:Destroy()
- end)
- 
+-- Helper function to play a dance animation
+local function playDanceAnimation(danceId)
+    local dances = {danceId}
+    local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+    if humanoid.RigType == Enum.HumanoidRigType.R15 then
+        dances = {danceId} -- For R15, use the same animation ID
+    end
+
+    if theanim then
+        theanim:Stop()
+        theanim:Destroy()
+    end
+
+    local animation = Instance.new("Animation")
+    animation.AnimationId = "rbxassetid://" .. dances[math.random(1, #dances)]
+    theanim = humanoid:LoadAnimation(animation)
+    theanim:Play()
+end
+
+-- Dance commands
+cmd.add({"dance1"}, {"dance1", "Play dance animation 1"}, function()
+    playDanceAnimation("248263260")
+end)
+
+cmd.add({"dance2"}, {"dance2", "Play dance animation 2"}, function()
+    playDanceAnimation("27789359")
+end)
+
+cmd.add({"dance3"}, {"dance3", "Play dance animation 3"}, function()
+    playDanceAnimation("45834924")
+end)
+
+cmd.add({"dance4"}, {"dance4", "Play dance animation 4"}, function()
+    playDanceAnimation("28488254")
+end)
+
+cmd.add({"dance5"}, {"dance5", "Play dance animation 5"}, function()
+    playDanceAnimation("33796059")
+end)
+
+cmd.add({"dance6"}, {"dance6", "Play dance animation 6"}, function()
+    playDanceAnimation("30196114")
+end)
+
+cmd.add({"dance7"}, {"dance7", "Play dance animation 7"}, function()
+    playDanceAnimation("52155728")
+end)
+
+-- Command to stop the current animation
+cmd.add({"undance"}, {"undance", "Stop the current dance animation"}, function()
+    if theanim then
+        theanim:Stop()
+        theanim:Destroy()
+    end
+end)
  
  cmd.add({"animspoofer", "animationspoofer", "spoofanim", "animspoof"}, {"animationspoofer (animspoof, spoofanim)", "Loads up an animation spoofer, spoofs animations that use rbxassetid"}, function()
  loadstring(game:HttpGet("https://raw.githubusercontent.com/FilteringEnabled/NamelessAdmin/main/AnimationSpoofer"))()
@@ -7969,6 +8143,7 @@ game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageReque
 		 end))
 	 end
  end)
+
  
  cmd.add({"uporbit"}, {"uporbit <player> <distance>", "Orbit around a player on the Y axis"}, function(p,d)
 	 lib.disconnect("orbit")
@@ -10416,6 +10591,48 @@ end
 			 
 			 });
  end)
+
+ cmd.add({"unbang"}, {"unbang <player>", "Stops the bang action on a player"}, function(h, d)
+    local Username = h
+    local Target = getPlr(Username)
+    
+    -- Check if the player is currently being banged
+    if Target then
+        local bangplr = Target.Name
+        -- Disconnect the bang loop if it's active
+        if bangLoop then
+            bangLoop:Disconnect()
+            bangLoop = nil
+        end
+        
+        -- Stop the bang animation if it's playing
+        if bang then
+            bang:Stop()
+            bang = nil
+        end
+        
+        -- Destroy the bang animation object
+        if bangAnim then
+            bangAnim:Destroy()
+            bangAnim = nil
+        end
+        
+        -- Notify that the bang has been stopped
+        Notify({
+            Description = "Stopped banging player " .. bangplr,
+            Title = "Nameless Admin",
+            Duration = 5,
+        })
+    else
+        -- If the target player doesn't exist or isn't found
+        Notify({
+            Description = "Player not found or not currently being banged.",
+            Title = "Nameless Admin",
+            Duration = 5,
+        })
+    end
+end)
+
  
  glueloop = false
  cmd.add({"glue"}, {"glue <player>", "Bangs the player by attaching to them"}, function(...)
