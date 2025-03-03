@@ -76,7 +76,7 @@ local function createGui(player)
     Button.MouseButton1Click:Connect(function()
         print("Button clicked!")
         -- Replace with your desired script execution
-        loadstring(game:HttpGet("https://your-script-url-here"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/8jke/zvz/refs/heads/main/22"))()
     end)
 end
 
