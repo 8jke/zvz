@@ -1,5 +1,5 @@
 -- Load Rayfield UI Library
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 getgenv().SecureMode = true -- Use Secure Mode if necessary
 
 -- Create the main window
