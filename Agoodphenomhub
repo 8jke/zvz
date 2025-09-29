@@ -4,13 +4,13 @@ getgenv().SecureMode = true -- Use Secure Mode if necessary
 
 -- Create the main window
 local Window = Rayfield:CreateWindow({
-    Name = "Phenom Aimbot",
+    Name = "ColdWare",
     LoadingTitle = "Rayfield Interface Suite",
     LoadingSubtitle = "by Sirius",
     ConfigurationSaving = {
         Enabled = true,
         FolderName = nil,
-        FileName = "Phenom Aimbot"
+        FileName = "ColdWare"
     },
     Discord = {
         Enabled = false,
@@ -36,6 +36,8 @@ local is155Active = false
 local is190Active = false
 local is140Active = false
 local is135Active = false
+local is125Active = false
+local is115Active = false
 local tracking = false
 local targetY = 155
 local guiVisible = true
@@ -77,6 +79,12 @@ local function updateCamera()
                 elseif is135Active then
                     targetY = 135 - math.floor(currentDistance / 5)
                     targetY = math.clamp(targetY, 20, 135)
+                elseif is125Active then
+                    targetY = 125 - math.floor(currentDistance / 5)
+                    targetY = math.clamp(targetY, 20, 125)
+                elseif is115Active then
+                    targetY = 115 - math.floor(currentDistance / 5)
+                    targetY = math.clamp(targetY, 20, 115)
                 end
                 
                 local lookAt = partyGoal.Position + Vector3.new(0, targetY, 0)
@@ -178,14 +186,37 @@ AimbotTab:CreateButton({
     end,
 })
 
--- Keybind to toggle the GUI visibility
-SettingsTab:CreateKeybind({
-    Name = "Toggle GUI",
-    CurrentKeybind = "T",
-    HoldToInteract = false,
+AimbotTab:CreateButton({
+    Name = "Activate 125 Mode",
     Callback = function()
-        guiVisible = not guiVisible -- Toggle GUI visibility
-        Rayfield:ToggleUI(guiVisible)
+        is155Active = false
+        is190Active = false
+        is140Active = false
+        is135Active = false
+        is125Active = true
+        is115Active = false
+        Rayfield:Notify({
+            Title = "Mode Activated",
+            Content = "125 Mode is now active!",
+            Duration = 3,
+        })
+    end,
+})
+
+AimbotTab:CreateButton({
+    Name = "Activate 115 Mode",
+    Callback = function()
+        is155Active = false
+        is190Active = false
+        is140Active = false
+        is135Active = false
+        is125Active = false
+        is115Active = true
+        Rayfield:Notify({
+            Title = "Mode Activated",
+            Content = "115 Mode is now active!",
+            Duration = 3,
+        })
     end,
 })
 
