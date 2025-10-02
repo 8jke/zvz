@@ -1,102 +1,225 @@
--- Load Rayfield
-local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+-- Optimized WRD ESP
+-- Inix edition (lag reduced)
 
--- Create the main window
-local Window = Rayfield:CreateWindow({
-    Name = "ESP Hub",
-    LoadingTitle = "ESP Suite",
-    LoadingSubtitle = "with Rayfield UI",
-    ConfigurationSaving = {
-        Enabled = true,
-        FolderName = "ESPConfig",
-        FileName = "Settings"
-    },
-    Discord = {
-        Enabled = false
+-- Default settings (edit here if you like)
+_G.WRDESPEnabled = _G.WRDESPEnabled ~= false -- default true
+_G.WRDESPBoxes = _G.WRDESPBoxes ~= false -- default true
+_G.WRDESPTeamColors = _G.WRDESPTeamColors ~= false -- default true
+_G.WRDESPTracers = _G.WRDESPTracers or false -- default false
+_G.WRDESPNames = _G.WRDESPNames ~= false -- default true
+_G.WRDESPShowTeamMates = _G.WRDESPShowTeamMates or false -- default false
+
+if not _G.WRDESPLoaded then
+    local ESP = {
+        Enabled = false,
+        Boxes = _G.WRDESPBoxes,
+        BoxShift = CFrame.new(0,-1.5,0),
+        BoxSize = Vector3.new(4,6,0),
+        Color = Color3.fromRGB(255, 170, 0),
+        FaceCamera = false,
+        Names = _G.WRDESPNames,
+        TeamColor = _G.WRDESPTeamColors,
+        Thickness = 2,
+        AttachShift = 1,
+        TeamMates = _G.WRDESPShowTeamMates,
+        Players = true,
+        Objects = setmetatable({}, {__mode="kv"}),
+        Overrides = {}
     }
-})
 
--- Tabs
-local MainTab = Window:CreateTab("Main", 4483362458) -- icon id
-local ESPSection = MainTab:CreateSection("ESP Controls")
+    local cam = workspace.CurrentCamera
+    local plrs = game:GetService("Players")
+    local plr = plrs.LocalPlayer
+    local RunService = game:GetService("RunService")
 
--- Import the ESP script
-loadstring(game:HttpGet("https://pastebin.com/raw/VPGhQ3z0"))() 
--- 👆 Replace with the optimized ESP script I gave you earlier
--- (Or paste it directly instead of loading from pastebin if you prefer)
+    -- Drawing helper
+    local function Draw(obj, props)
+        local new = Drawing.new(obj)
+        for i,v in pairs(props or {}) do new[i] = v end
+        return new
+    end
 
--- Initial settings
-local currentSettings = {
-    Enabled = true,
-    Boxes = true,
-    TeamColor = true,
-    Tracers = false,
-    Names = true,
-    TeamMates = false,
-}
+    local boxBase = {}
+    boxBase.__index = boxBase
 
--- Call update if ESP already loaded
-if _G.WRDESPUpdate then
-    _G.WRDESPUpdate(currentSettings)
+    function boxBase:Remove()
+        ESP.Objects[self.Object] = nil
+        for i,v in pairs(self.Components) do
+            v.Visible = false
+            v:Remove()
+            self.Components[i] = nil
+        end
+    end
+
+    function boxBase:Update()
+        if not self.PrimaryPart then
+            return self:Remove()
+        end
+
+        local allow = true
+        if self.Player and not ESP.TeamMates and ESP:GetTeam(self.Player) == ESP:GetTeam(plr) then
+            allow = false
+        end
+        if not allow then
+            for _,comp in pairs(self.Components) do
+                comp.Visible = false
+            end
+            return
+        end
+
+        local cf = self.PrimaryPart.CFrame
+        if ESP.FaceCamera then
+            cf = CFrame.new(cf.p, cam.CFrame.p)
+        end
+
+        local color = self.Color or ESP.Color
+        if ESP.TeamColor and self.Player and self.Player.Team then
+            color = self.Player.Team.TeamColor.Color
+        end
+
+        local size = self.Size
+        local locs = {
+            TopLeft = cf * ESP.BoxShift * CFrame.new(size.X/2,size.Y/2,0),
+            TopRight = cf * ESP.BoxShift * CFrame.new(-size.X/2,size.Y/2,0),
+            BottomLeft = cf * ESP.BoxShift * CFrame.new(size.X/2,-size.Y/2,0),
+            BottomRight = cf * ESP.BoxShift * CFrame.new(-size.X/2,-size.Y/2,0),
+            TagPos = cf * ESP.BoxShift * CFrame.new(0,size.Y/2,0),
+            Torso = cf * ESP.BoxShift
+        }
+
+        -- Box
+        if ESP.Boxes and self.Components.Quad then
+            local TL, Vis1 = cam:WorldToViewportPoint(locs.TopLeft.p)
+            local TR, Vis2 = cam:WorldToViewportPoint(locs.TopRight.p)
+            local BL, Vis3 = cam:WorldToViewportPoint(locs.BottomLeft.p)
+            local BR, Vis4 = cam:WorldToViewportPoint(locs.BottomRight.p)
+
+            if Vis1 or Vis2 or Vis3 or Vis4 then
+                self.Components.Quad.Visible = true
+                self.Components.Quad.PointA = Vector2.new(TR.X, TR.Y)
+                self.Components.Quad.PointB = Vector2.new(TL.X, TL.Y)
+                self.Components.Quad.PointC = Vector2.new(BL.X, BL.Y)
+                self.Components.Quad.PointD = Vector2.new(BR.X, BR.Y)
+                self.Components.Quad.Color = color
+            else
+                self.Components.Quad.Visible = false
+            end
+        else
+            self.Components.Quad.Visible = false
+        end
+
+        -- Names
+        if ESP.Names then
+            local TagPos, Visible = cam:WorldToViewportPoint(locs.TagPos.p)
+            if Visible then
+                self.Components.Name.Visible = true
+                self.Components.Name.Position = Vector2.new(TagPos.X, TagPos.Y)
+                self.Components.Name.Text = self.Name
+                self.Components.Name.Color = color
+
+                self.Components.Distance.Visible = true
+                self.Components.Distance.Position = Vector2.new(TagPos.X, TagPos.Y + 14)
+                self.Components.Distance.Text = math.floor((cam.CFrame.p - cf.p).Magnitude).."m"
+                self.Components.Distance.Color = color
+            else
+                self.Components.Name.Visible = false
+                self.Components.Distance.Visible = false
+            end
+        else
+            self.Components.Name.Visible = false
+            self.Components.Distance.Visible = false
+        end
+
+        -- Tracers
+        if ESP.Tracers then
+            local TorsoPos, Vis = cam:WorldToViewportPoint(locs.Torso.p)
+            if Vis then
+                self.Components.Tracer.Visible = true
+                self.Components.Tracer.From = Vector2.new(TorsoPos.X, TorsoPos.Y)
+                self.Components.Tracer.To = Vector2.new(cam.ViewportSize.X/2, cam.ViewportSize.Y/ESP.AttachShift)
+                self.Components.Tracer.Color = color
+            else
+                self.Components.Tracer.Visible = false
+            end
+        else
+            self.Components.Tracer.Visible = false
+        end
+    end
+
+    function ESP:Add(obj, options)
+        local box = setmetatable({
+            Name = options.Name or obj.Name,
+            Type = "Box",
+            Color = options.Color,
+            Size = options.Size or self.BoxSize,
+            Object = obj,
+            Player = options.Player,
+            PrimaryPart = options.PrimaryPart,
+            Components = {}
+        }, boxBase)
+
+        box.Components.Quad = Draw("Quad", {Thickness = self.Thickness, Visible = false})
+        box.Components.Name = Draw("Text", {Center = true, Outline = true, Size = 19, Visible = false})
+        box.Components.Distance = Draw("Text", {Center = true, Outline = true, Size = 19, Visible = false})
+        box.Components.Tracer = Draw("Line", {Thickness = self.Thickness, Visible = false})
+
+        self.Objects[obj] = box
+        return box
+    end
+
+    function ESP:GetTeam(p) return p and p.Team end
+
+    -- Player handling
+    local function CharAdded(char)
+        local p = plrs:GetPlayerFromCharacter(char)
+        task.spawn(function()
+            local hrp = char:WaitForChild("HumanoidRootPart", 5)
+            if hrp then
+                ESP:Add(char, {Name = p.Name, Player = p, PrimaryPart = hrp})
+            end
+        end)
+    end
+    local function PlayerAdded(p)
+        p.CharacterAdded:Connect(CharAdded)
+        if p.Character then CharAdded(p.Character) end
+    end
+    plrs.PlayerAdded:Connect(PlayerAdded)
+    for _,v in ipairs(plrs:GetPlayers()) do
+        if v ~= plr then PlayerAdded(v) end
+    end
+
+    -- ESP toggle connection
+    local espConn
+    local function EnableESP(bool)
+        ESP.Enabled = bool
+        if bool and not espConn then
+            espConn = RunService.RenderStepped:Connect(function()
+                cam = workspace.CurrentCamera
+                for _,v in pairs(ESP.Objects) do
+                    if v.Update then v:Update() end
+                end
+            end)
+        elseif not bool and espConn then
+            espConn:Disconnect()
+            espConn = nil
+            for _,v in pairs(ESP.Objects) do
+                for _,comp in pairs(v.Components) do comp.Visible = false end
+            end
+        end
+    end
+
+    -- Start with defaults
+    EnableESP(_G.WRDESPEnabled)
+
+    -- Exposed updater
+    _G.WRDESPUpdate = function(settings)
+        if settings.Enabled ~= nil then EnableESP(settings.Enabled) end
+        if settings.Boxes ~= nil then ESP.Boxes = settings.Boxes end
+        if settings.TeamColor ~= nil then ESP.TeamColor = settings.TeamColor end
+        if settings.Tracers ~= nil then ESP.Tracers = settings.Tracers end
+        if settings.Names ~= nil then ESP.Names = settings.Names end
+        if settings.TeamMates ~= nil then ESP.TeamMates = settings.TeamMates end
+    end
+
+    _G.WRDESPLoaded = true
 end
-
--- Rayfield Toggles
-MainTab:CreateToggle({
-    Name = "Enable ESP",
-    CurrentValue = currentSettings.Enabled,
-    Flag = "EnableESP",
-    Callback = function(Value)
-        currentSettings.Enabled = Value
-        _G.WRDESPUpdate(currentSettings)
-    end,
-})
-
-MainTab:CreateToggle({
-    Name = "Show Boxes",
-    CurrentValue = currentSettings.Boxes,
-    Flag = "ESPBoxes",
-    Callback = function(Value)
-        currentSettings.Boxes = Value
-        _G.WRDESPUpdate(currentSettings)
-    end,
-})
-
-MainTab:CreateToggle({
-    Name = "Team Colors",
-    CurrentValue = currentSettings.TeamColor,
-    Flag = "ESPTeamColors",
-    Callback = function(Value)
-        currentSettings.TeamColor = Value
-        _G.WRDESPUpdate(currentSettings)
-    end,
-})
-
-MainTab:CreateToggle({
-    Name = "Tracers",
-    CurrentValue = currentSettings.Tracers,
-    Flag = "ESPTracers",
-    Callback = function(Value)
-        currentSettings.Tracers = Value
-        _G.WRDESPUpdate(currentSettings)
-    end,
-})
-
-MainTab:CreateToggle({
-    Name = "Show Names",
-    CurrentValue = currentSettings.Names,
-    Flag = "ESPNames",
-    Callback = function(Value)
-        currentSettings.Names = Value
-        _G.WRDESPUpdate(currentSettings)
-    end,
-})
-
-MainTab:CreateToggle({
-    Name = "Show Teammates",
-    CurrentValue = currentSettings.TeamMates,
-    Flag = "ESPTeammates",
-    Callback = function(Value)
-        currentSettings.TeamMates = Value
-        _G.WRDESPUpdate(currentSettings)
-    end,
-})
